@@ -84,13 +84,12 @@ body {
     flex: 1;
     display: flex;
     flex-direction: column;
-    min-width: 0; /* Prevents overflow pushing */
+    min-width: 0; 
 }
 
 .top-bar {
     height: 65px;
     min-height: 65px;
-    /* This creates that soft, light green/yellow glowing background */
     background: linear-gradient(90deg, #eaf4ed 0%, #f6fbf8 100%);
     border-bottom: 1px solid #d6e8dd;
     display: flex;
@@ -99,9 +98,7 @@ body {
     padding: 0 30px;
     font-size: 1.3rem;
     font-weight: 700;
-    /* This matches the dark navy/teal text color from your image */
     color: #003333; 
-    /* A tiny, soft shadow to separate it from the workspace */
     box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
 }
 
@@ -109,7 +106,7 @@ body {
     padding: 30px;
     flex: 1;
     display: none; 
-    min-height: 0; /* FIX: Allows internal scrolling */
+    min-height: 0; 
 }
 
 .editor-container.active {
@@ -123,7 +120,7 @@ body {
     display: flex;
     gap: 20px;
     flex: 1;
-    min-height: 0; /* FIX: Allows internal scrolling */
+    min-height: 0;
 }
 
 .panel {
@@ -135,7 +132,7 @@ body {
     flex-direction: column;
     overflow: hidden;
     transition: 0.3s;
-    min-height: 0; /* FIX: Forces panel to stay on screen */
+    min-height: 0; 
 }
 
 .panel:focus-within {
@@ -153,7 +150,7 @@ body {
     outline: none;
     color: #374151;
     background: transparent;
-    overflow-y: auto; /* This creates the scrollbar inside the box! */
+    overflow-y: auto;
 }
 
 .panel .output-text {
@@ -164,7 +161,7 @@ body {
 /* --- BOTTOM TOOLBARS --- */
 .toolbar {
     height: 60px;
-    min-height: 60px; /* Forces toolbar to stay at the bottom */
+    min-height: 60px; 
     background: #ffffff;
     border-top: 1px solid #e5e7eb;
     display: flex;
@@ -228,6 +225,7 @@ body {
     from { opacity: 0; }
     to { opacity: 1; }
 }
+
 /* --- APP FOOTER --- */
 .app-footer {
     height: 50px;
@@ -251,5 +249,44 @@ body {
 }
 
 .footer-links a:hover {
-    color: #10b981; /* Emerald Green hover effect */
+    color: #10b981;
+}
+
+/* --- MOBILE RESPONSIVENESS (ADDED) --- */
+@media (max-width: 768px) {
+    body {
+        flex-direction: column;
+        height: auto;
+        overflow-y: auto;
+    }
+
+    .sidebar {
+        width: 100%;
+        height: auto;
+        border-right: none;
+        border-bottom: 1px solid #e5e7eb;
+    }
+
+    .main-content {
+        height: auto;
+    }
+
+    .split-screen {
+        flex-direction: column;
+        gap: 15px;
+        height: auto;
+    }
+
+    .panel {
+        min-height: 250px;
+    }
+
+    .editor-container {
+        padding: 15px;
+    }
+
+    .top-bar {
+        font-size: 1.1rem;
+        padding: 0 15px;
+    }
 }
