@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gistify | AI Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css')}}">
+</head>
+<body>
+
+    <nav class="sidebar">
+        <div class="brand">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="#10b981"><circle cx="12" cy="12" r="12"/></svg>
+            Gistify
+        </div>
+
+        <div class="nav-menu">
+            <div class="nav-item active" onclick="switchTool('summarizer', 'Email Summarizer', this)">
+                <span>📧 Email Summarizer</span>
+            </div>
+            <div class="nav-item" onclick="switchTool('ask', 'Ask AI', this)">
+                <span>💬 Ask AI</span>
+            </div>
+
+            <hr style="margin: 15px 0; border: none; border-top: 1px solid #e5e7eb;">
+
+            <div class="nav-item locked" onclick="showToast('Paraphraser is coming in V2!')">
+                <span>🔄 Paraphraser</span>
+                <span class="badge-lock">Soon</span>
+            </div>
+            <div class="nav-item locked" onclick="showToast('Grammar Checker is coming soon!')">
+                <span>✨ Grammar</span>
+                <span class="badge-lock">Soon</span>
+            </div>
+            <div class="nav-item locked" onclick="showToast('Plagiarism Checker is a Premium Feature.')">
+                <span>🔍 Plagiarism</span>
+                <span class="badge-lock">Premium</span>
+            </div>
+        </div>
+    </nav>
+
+    <main class="main-content">
+        <div class="top-bar" id="top-bar-title">Email Summarizer</div>
+
+        <div id="summarizer" class="editor-container active">
+            <form class="split-screen" id="form-summarizer">
+                <div class="panel">
+                    <textarea name="text_input" id="sum-input" placeholder="Paste your email here to summarize it..." required oninput="updateWordCount('sum-input', 'sum-count')"></textarea>
+                    <div class="toolbar">
+                        <span class="word-count" id="sum-count">0 words</span>
+                        <button type="submit" class="action-btn" id="btn-summarize">Summarize</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="output-text" id="sum-output">Your summary will appear here...</div>
+                    <div class="toolbar">
+                        <span class="word-count">Output</span>
+                        <button type="button" class="action-btn copy-btn" onclick="copyText('sum-output')">Copy Text</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <div id="ask" class="editor-container">
+            <form class="split-screen" id="form-ask">
+                <div class="panel">
+                    <textarea name="text_input" id="ask-input" placeholder="Ask the AI any question, or ask it to write something for you..." required oninput="updateWordCount('ask-input', 'ask-count')"></textarea>
+                    <div class="toolbar">
+                        <span class="word-count" id="ask-count">0 words</span>
+                        <button type="submit" class="action-btn" id="btn-ask">Ask AI</button>
+                    </div>
+                </div>
+
+                <div class="panel">
+                    <div class="output-text" id="ask-output">The AI's response will appear here...</div>
+                    <div class="toolbar">
+                        <span class="word-count">Output</span>
+                        <button type="button" class="action-btn copy-btn" onclick="copyText('ask-output')">Copy Text</button>
+                    </div>
+                </div>
+            </form>
+        </div>
+
+        <footer class="app-footer">
+            <div class="footer-copyright">
+                &copy; 2026 Gistify. All rights reserved.
+            </div>
+            <div class="footer-links">
+                <a href="#">Privacy</a>
+                <a href="#">Terms</a>
+                <a href="#">Help Center</a>
+            </div>
+        </footer>
+    </main>
+
+    <div id="toast">Feature Coming Soon!</div>
+
+    <script>
+        // 1. Switch Tools seamlessly
+        function switchTool(toolId, title, element) {
+            // Hide all tools and remove active classes
+            document.querySelectorAll('.editor-container').forEach(el => el.classList.remove('active'));
+            document.querySelectorAll('.nav-item:not(.locked)').forEach(el => el.classList.remove('active'));
+            
+            // Show selected tool
+            document.getElementById(toolId).classList.add('active');
+            element.classList.add('active');
+            document.getElementById('top-bar-title').innerText = title;
+        }
+
+        // 2. Live Word Counter
+        function updateWordCount(inputId, countId) {
+            let text = document.getElementById(inputId).value.trim();
+            let words = text === "" ? 0 : text.split(/\s+/).length;
+            document.getElementById(countId).innerText = words + (words === 1 ? " word" : " words");
+        }
+
+        // 3. Copy to Clipboard Feature
+        function copyText(outputId) {
+            let text = document.getElementById(outputId).innerText;
+            if (text && text !== "Your summary will appear here..." && text !== "The AI's response will appear here...") {
+                navigator.clipboard.writeText(text);
+                showToast("Copied to clipboard!");
+            }
+        }
+
+        // 4. Show Interactive "Coming Soon" Toast
+        function showToast(message) {
+            let toast = document.getElementById("toast");
+            toast.innerText = message;
+            toast.style.bottom = "30px";
+            setTimeout(() => { toast.style.bottom = "-100px"; }, 3000);
+        }
+
+        // 5. Handle Form Submission for BOTH tools
+        async function processForm(event, route, inputId, outputId, btnId, originalBtnText) {
+            event.preventDefault();
+            let formData = new FormData(event.target);
+            
+            let outputBox = document.getElementById(outputId);
+            let btn = document.getElementById(btnId);
+
+            // UI Loading State
+            btn.innerText = "Processing...";
+            btn.disabled = true;
+            outputBox.innerHTML = '<span style="color:#10b981; font-weight:bold;">Generating response...</span>';
+
+            // Fetch from backend
+            let res = await fetch(route, { method: "POST", body: formData });
+            let data = await res.json();
+            
+            // Revert UI and show answer
+            outputBox.innerText = data.response;
+            btn.innerText = originalBtnText;
+            btn.disabled = false;
+        }
+
+        // Attach listeners to forms
+        document.getElementById("form-summarizer").onsubmit = (e) => processForm(e, '/summarize', 'sum-input', 'sum-output', 'btn-summarize', 'Summarize');
+        document.getElementById("form-ask").onsubmit = (e) => processForm(e, '/ask', 'ask-input', 'ask-output', 'btn-ask', 'Ask AI');
+    </script>
+</body>
+</html>

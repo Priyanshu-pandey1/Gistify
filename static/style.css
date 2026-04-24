@@ -1,0 +1,255 @@
+@import url('https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600;700&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Open Sans', sans-serif;
+}
+
+body {
+    background-color: #f3f4f6;
+    color: #252525;
+    display: flex;
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- SIDEBAR --- */
+.sidebar {
+    width: 250px;
+    background-color: #ffffff;
+    border-right: 1px solid #e5e7eb;
+    padding: 20px 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.brand {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: #10b981; 
+    padding: 0 20px 30px 20px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.nav-menu {
+    display: flex;
+    flex-direction: column;
+}
+
+.nav-item {
+    padding: 15px 20px;
+    font-size: 15px;
+    font-weight: 600;
+    color: #4b5563;
+    cursor: pointer;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    transition: 0.2s;
+    border-left: 4px solid transparent;
+}
+
+.nav-item:hover {
+    background-color: #f9fafb;
+    color: #10b981;
+}
+
+.nav-item.active {
+    background-color: #ecfdf5;
+    color: #10b981;
+    border-left-color: #10b981;
+}
+
+.badge-lock {
+    background: #fef08a;
+    color: #854d0e;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.locked {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+/* --- MAIN WORKSPACE --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    min-width: 0; /* Prevents overflow pushing */
+}
+
+.top-bar {
+    height: 65px;
+    min-height: 65px;
+    /* This creates that soft, light green/yellow glowing background */
+    background: linear-gradient(90deg, #eaf4ed 0%, #f6fbf8 100%);
+    border-bottom: 1px solid #d6e8dd;
+    display: flex;
+    align-items: center;
+    justify-content: center; 
+    padding: 0 30px;
+    font-size: 1.3rem;
+    font-weight: 700;
+    /* This matches the dark navy/teal text color from your image */
+    color: #003333; 
+    /* A tiny, soft shadow to separate it from the workspace */
+    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.03);
+}
+
+.editor-container {
+    padding: 30px;
+    flex: 1;
+    display: none; 
+    min-height: 0; /* FIX: Allows internal scrolling */
+}
+
+.editor-container.active {
+    display: flex;
+    flex-direction: column;
+    animation: fadeIn 0.3s ease;
+}
+
+/* --- SPLIT SCREEN UI --- */
+.split-screen {
+    display: flex;
+    gap: 20px;
+    flex: 1;
+    min-height: 0; /* FIX: Allows internal scrolling */
+}
+
+.panel {
+    flex: 1;
+    background: #ffffff;
+    border: 2px solid #e5e7eb;
+    border-radius: 12px;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: 0.3s;
+    min-height: 0; /* FIX: Forces panel to stay on screen */
+}
+
+.panel:focus-within {
+    border-color: #10b981;
+    box-shadow: 0 0 0 3px rgba(16, 185, 129, 0.1);
+}
+
+.panel textarea, .panel .output-text {
+    flex: 1;
+    border: none;
+    padding: 20px;
+    font-size: 16px;
+    line-height: 1.6;
+    resize: none;
+    outline: none;
+    color: #374151;
+    background: transparent;
+    overflow-y: auto; /* This creates the scrollbar inside the box! */
+}
+
+.panel .output-text {
+    background: #f9fafb;
+    white-space: pre-wrap; 
+}
+
+/* --- BOTTOM TOOLBARS --- */
+.toolbar {
+    height: 60px;
+    min-height: 60px; /* Forces toolbar to stay at the bottom */
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.word-count {
+    font-size: 13px;
+    color: #6b7280;
+    font-weight: 600;
+}
+
+.action-btn {
+    background: #10b981;
+    color: white;
+    border: none;
+    padding: 10px 24px;
+    border-radius: 20px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.action-btn:hover {
+    background: #059669;
+}
+
+.action-btn:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+}
+
+.copy-btn {
+    background: transparent;
+    color: #10b981;
+    border: 2px solid #10b981;
+}
+.copy-btn:hover {
+    background: #ecfdf5;
+}
+
+/* --- TOAST NOTIFICATION --- */
+#toast {
+    position: fixed;
+    bottom: -100px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: #1f2937;
+    color: white;
+    padding: 12px 24px;
+    border-radius: 8px;
+    font-weight: 600;
+    transition: 0.3s;
+    z-index: 1000;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+/* --- APP FOOTER --- */
+.app-footer {
+    height: 50px;
+    min-height: 50px;
+    background: #ffffff;
+    border-top: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 30px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #6b7280;
+}
+
+.footer-links a {
+    color: #6b7280;
+    text-decoration: none;
+    margin-left: 20px;
+    transition: 0.2s ease;
+}
+
+.footer-links a:hover {
+    color: #10b981; /* Emerald Green hover effect */
+}
